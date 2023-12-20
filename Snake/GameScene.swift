@@ -25,6 +25,9 @@ class GameScene: SKScene {
         addChild(testNode)
         
         intializeBoard(size: 15)
+        squares[1][1].isSnake = true
+        squares[1][2].isSnake = true
+        squares[1][3].isSnake = true
     }
     
     override func keyDown(with event: NSEvent) {
@@ -45,7 +48,7 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        
+        updateSnakePosition(direction: snakeDirection)
         if snakeDirection == "down" {
             testNode.position.y -= 2
         } else if snakeDirection == "right" {
@@ -95,6 +98,26 @@ class GameScene: SKScene {
     }
     
     func updateSnakePosition(direction: String) {
-        
+        for row in 0..<squares.count {
+            for column in 0..<squares.count {
+                if squares[row][column].isSnake {
+                    squares[row][column].color = NSColor.systemGreen
+                }
+            }
+        }
+    }
+    
+    func getNeighboringSquares(square: Square) -> [Square] {
+        var neighbors: [Square] = []
+        let offsets = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)]
+        for (rowOffset, columnOffset) in offsets {
+            
+            let row = square.row + rowOffset
+            let column = square.column + columnOffset
+            if row >= 0 && row < 15 && column >= 0 && column < 15 {
+                neighbors.append(squares[row][column])
+            }
+        }
+        return neighbors
     }
 }
