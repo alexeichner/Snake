@@ -13,6 +13,7 @@ class GameScene: SKScene {
     var testNode: SKSpriteNode!
     var snakeDirection = "start"
     var squares: [[Square]] = []
+    var frameCount = 0
     
     // array of tuples where the first int is the row and the second is the column
     var snake: [(Int, Int)] = []
@@ -34,20 +35,19 @@ class GameScene: SKScene {
     }
     
     override func keyDown(with event: NSEvent) {
-        print(event.keyCode)
         switch event.keyCode {
         case 125:
             snakeDirection = "down"
-            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
+//            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
         case 124:
             snakeDirection = "right"
-            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
+//            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
         case 126:
             snakeDirection = "up"
-            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
+//            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
         case 123:
             snakeDirection = "left"
-            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
+//            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
         default:
             print("default")
         }
@@ -56,17 +56,11 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
-//        if snakeDirection == "down" {
-//            testNode.position.y -= 2
-//        } else if snakeDirection == "right" {
-//            testNode.position.x += 2
-//        } else if snakeDirection == "up" {
-//            testNode.position.y += 2
-//        } else if snakeDirection == "left" {
-//            testNode.position.x -= 2
-//        } else {
-//            
-//        }
+        frameCount += 1
+        
+        if frameCount % 10 == 0 {
+            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
+        }
     }
     
     func intializeBoard(size: Int) {
@@ -75,20 +69,6 @@ class GameScene: SKScene {
         for row in 0..<size {
             var squareRow: [Square] = []
             for column in 0..<size {
-//                if row % 2 == 0 {
-//                    if column % 2 == 0 {
-//                        squareRow.append(createSquare(color: NSColor.white, row: row, column: column))
-//                        
-//                    } else {
-//                        squareRow.append(createSquare(color: NSColor.gray, row: row, column: column))
-//                    }
-//                } else {
-//                    if column % 2 == 0 {
-//                        squareRow.append(createSquare(color: NSColor.gray, row: row, column: column))
-//                    } else {
-//                        squareRow.append(createSquare(color: NSColor.white, row: row, column: column))
-//                    }
-//                }
                 squareRow.append(createSquare(color: NSColor.white, row: row, column: column))
             }
             squares.append(squareRow)
@@ -157,3 +137,6 @@ class GameScene: SKScene {
         return neighbors
     }
 }
+//TODO: Check if snake hits wall
+//TODO: Make snake multiple squares
+
