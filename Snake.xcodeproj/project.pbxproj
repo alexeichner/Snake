@@ -14,6 +14,8 @@
 		DB47897A2B30A3D900208BDD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4789792B30A3D900208BDD /* ViewController.swift */; };
 		DB47897C2B30A3DA00208BDD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB47897B2B30A3DA00208BDD /* Assets.xcassets */; };
 		DB47897F2B30A3DA00208BDD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB47897D2B30A3DA00208BDD /* Main.storyboard */; };
+		DB4789872B31141400208BDD /* Square.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4789862B31141400208BDD /* Square.swift */; };
+		DB4789892B31148700208BDD /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4789882B31148700208BDD /* Board.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		DB47897B2B30A3DA00208BDD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DB47897E2B30A3DA00208BDD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DB4789802B30A3DA00208BDD /* Snake.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Snake.entitlements; sourceTree = "<group>"; };
+		DB4789862B31141400208BDD /* Square.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Square.swift; sourceTree = "<group>"; };
+		DB4789882B31148700208BDD /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +66,8 @@
 				DB4789732B30A3D900208BDD /* GameScene.sks */,
 				DB4789752B30A3D900208BDD /* Actions.sks */,
 				DB4789772B30A3D900208BDD /* GameScene.swift */,
+				DB4789862B31141400208BDD /* Square.swift */,
+				DB4789882B31148700208BDD /* Board.swift */,
 				DB4789792B30A3D900208BDD /* ViewController.swift */,
 				DB47897B2B30A3DA00208BDD /* Assets.xcassets */,
 				DB47897D2B30A3DA00208BDD /* Main.storyboard */,
@@ -142,7 +148,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB4789872B31141400208BDD /* Square.swift in Sources */,
 				DB47897A2B30A3D900208BDD /* ViewController.swift in Sources */,
+				DB4789892B31148700208BDD /* Board.swift in Sources */,
 				DB4789782B30A3D900208BDD /* GameScene.swift in Sources */,
 				DB4789722B30A3D900208BDD /* AppDelegate.swift in Sources */,
 			);
@@ -290,6 +298,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Snake;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -315,6 +324,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Snake;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;

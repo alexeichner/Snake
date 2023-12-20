@@ -10,82 +10,91 @@ import GameplayKit
 
 class GameScene: SKScene {
     
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
+    var testNode: SKSpriteNode!
+    var snakeDirection = "start"
+    var squares: [[Square]] = []
+    
+    // array of tuples where the first int is the row and the second is the column
+    var snake: [(Int, Int)] = []
+//    var board: Board!
     
     override func didMove(to view: SKView) {
+        testNode = SKSpriteNode(color: NSColor.blue, size: CGSize(width: 20.0, height: 20.0))
+        testNode.position = CGPoint(x: 400, y: 400)
+        testNode.zPosition = 3
+        addChild(testNode)
         
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
-        
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
-    }
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
-    
-    override func mouseDown(with event: NSEvent) {
-        self.touchDown(atPoint: event.location(in: self))
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        self.touchMoved(toPoint: event.location(in: self))
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        self.touchUp(atPoint: event.location(in: self))
+        intializeBoard(size: 15)
     }
     
     override func keyDown(with event: NSEvent) {
+        print(event.keyCode)
         switch event.keyCode {
-        case 0x31:
-            if let label = self.label {
-                label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-            }
+        case 125:
+            snakeDirection = "down"
+        case 124:
+            snakeDirection = "right"
+        case 126:
+            snakeDirection = "up"
+        case 123:
+            snakeDirection = "left"
         default:
-            print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
+            print("default")
         }
     }
     
-    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        
+        if snakeDirection == "down" {
+            testNode.position.y -= 2
+        } else if snakeDirection == "right" {
+            testNode.position.x += 2
+        } else if snakeDirection == "up" {
+            testNode.position.y += 2
+        } else if snakeDirection == "left" {
+            testNode.position.x -= 2
+        } else {
+            
+        }
+    }
+    
+    func intializeBoard(size: Int) {
+        //board = Board(size: 15)
+        
+        for row in 0..<size {
+            var squareRow: [Square] = []
+            for column in 0..<size {
+                if row % 2 == 0 {
+                    if column % 2 == 0 {
+                        squareRow.append(createSquare(color: NSColor.white, row: row, column: column))
+                        
+                    } else {
+                        squareRow.append(createSquare(color: NSColor.gray, row: row, column: column))
+                    }
+                } else {
+                    if column % 2 == 0 {
+                        squareRow.append(createSquare(color: NSColor.gray, row: row, column: column))
+                    } else {
+                        squareRow.append(createSquare(color: NSColor.white, row: row, column: column))
+                    }
+                }
+            }
+            squares.append(squareRow)
+        }
+    }
+    
+    func createSquare(color: NSColor, row: Int, column: Int) -> Square {
+        let square = Square(row: row, column: column)
+        square.position = CGPoint(x: 200 + (row*30), y: 200 + (column*30))
+        square.size = CGSize(width: 30, height: 30)
+        square.color = color
+        square.zPosition = 2
+        addChild(square)
+        return square
+    }
+    
+    func updateSnakePosition(direction: String) {
+        
     }
 }
