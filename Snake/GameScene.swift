@@ -15,9 +15,10 @@ class GameScene: SKScene {
     var squares: [[Square]] = []
     var frameCount = 0
     var gameStarted = false
+    var gameEnded = false
     
     // array of tuples where the first int is the row and the second is the column
-    var snake: [(Int, Int)] = []
+    var snakeArray: [(Int, Int)] = []
     var headPosition = (1,1)
     
     override func didMove(to view: SKView) {
@@ -27,8 +28,8 @@ class GameScene: SKScene {
         squares[1][1].color = NSColor.systemGreen
         squares[1][2].isSnake = true
         squares[1][2].color = NSColor.systemGreen
-        snake.append(headPosition)
-        snake.append((1,2))
+        snakeArray.append(headPosition)
+        snakeArray.append((1,2))
         //squares[1][3].isSnake = true
 //        headPosition = updateSnakePosition(direction: snakeDirection)
     }
@@ -61,9 +62,11 @@ class GameScene: SKScene {
         
         frameCount += 1
         
-        if frameCount % 10 == 0 && gameStarted {
+        if frameCount % 10 == 0 && gameStarted && !gameEnded {
             headPosition = updateSnakePosition(direction: snakeDirection)
         }
+        
+        
     }
     
     func intializeBoard(size: Int) {
@@ -95,25 +98,25 @@ class GameScene: SKScene {
         var newHeadPosition = (headPosition.0, headPosition.1)
         var oldHeadPosition = headPosition
         
-        if snakeDirection == "down" {
+        if snakeDirection == "down" && canMoveToNextSquare(direction: "down") {
             squares[posX][posY].isSnake = false
             squares[posX][posY].color = NSColor.white
             squares[posX][posY - 1].isSnake = true
             squares[posX][posY - 1].color = NSColor.systemGreen
             newHeadPosition = (posX, posY - 1)
-        } else if snakeDirection == "right" {
+        } else if snakeDirection == "right" && canMoveToNextSquare(direction: "right") {
             squares[posX][posY].isSnake = false
             squares[posX][posY].color = NSColor.white
             squares[posX + 1][posY].isSnake = true
             squares[posX + 1][posY].color = NSColor.systemGreen
             newHeadPosition = (posX + 1, posY)
-        } else if snakeDirection == "up" {
+        } else if snakeDirection == "up" && canMoveToNextSquare(direction: "up") {
             squares[posX][posY].isSnake = false
             squares[posX][posY].color = NSColor.white
             squares[posX][posY + 1].isSnake = true
             squares[posX][posY + 1].color = NSColor.systemGreen
             newHeadPosition = (posX, posY + 1)
-        } else if snakeDirection == "left" {
+        } else if snakeDirection == "left" && canMoveToNextSquare(direction: "left") {
             squares[posX][posY].isSnake = false
             squares[posX][posY].color = NSColor.white
             squares[posX - 1][posY].isSnake = true
@@ -121,13 +124,13 @@ class GameScene: SKScene {
             newHeadPosition = (posX - 1, posY)
         }
         
-        let count = 1..<snake.count
+        let count = 1..<snakeArray.count
         for i in count {
-            let previousPos = snake[i]
-            snake[i] = oldHeadPosition
+            let previousPos = snakeArray[i]
+            snakeArray[i] = oldHeadPosition
             oldHeadPosition = previousPos
             
-            if (i + 1) == snake.count {
+            if (i + 1) == snakeArray.count {
                 squares[oldHeadPosition.0][oldHeadPosition.1].isSnake = false
                 squares[oldHeadPosition.0][oldHeadPosition.1].color = NSColor.white
             }
@@ -135,10 +138,28 @@ class GameScene: SKScene {
         return newHeadPosition
     }
     
-    func canMoveToNextSquare() -> Bool {
-        var isAbleToMove = true
+    func canMoveToNextSquare(direction: String) -> Bool {
+        let posX = headPosition.0
+        let posY = headPosition.1
         
-        return isAbleToMove
+        if direction == "down" {
+            if posY - 1 < 0 {
+                gameEnded = true
+            }
+        } else if direction == "right" {
+            if posX + 1 > 14 {
+                gameEnded = true
+            }
+        } else if direction == "up" {
+            if posY + 1 > 14 {
+                gameEnded = true
+            }
+        } else if direction == "left" {
+            if posX - 1 < 0 {
+                gameEnded = true
+            }
+        }
+        return gameEnded
     }
     
     func getNeighboringSquares(square: Square) -> [Square] {
