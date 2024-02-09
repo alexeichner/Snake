@@ -19,7 +19,12 @@ class GameScene: SKScene {
     
     // array of tuples where the first int is the row and the second is the column
     var snakeArray: [(Int, Int)] = []
+    
+    //the initial position of the snakes head
     var headPosition = (3,1)
+    
+    //the initial position of the food
+    var foodPosition = (10, 1)
     
     override func didMove(to view: SKView) {
         //Create a new grid of squares
@@ -37,6 +42,9 @@ class GameScene: SKScene {
         snakeArray.append(headPosition)
         snakeArray.append((2,1))
         snakeArray.append((1,1))
+        
+        //Changes the color of the initial square with the food
+        squares[foodPosition.0][foodPosition.1].color = NSColor.systemRed
     }
     
     override func keyDown(with event: NSEvent) {
@@ -44,19 +52,15 @@ class GameScene: SKScene {
         case 125:
             snakeDirection = "down"
             gameStarted = true
-//            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
         case 124:
             snakeDirection = "right"
             gameStarted = true
-//            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
         case 126:
             snakeDirection = "up"
             gameStarted = true
-//            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
         case 123:
             snakeDirection = "left"
             gameStarted = true
-//            headPosition = updateSnakePosition(direction: snakeDirection, headPositionX: headPosition.0, headPositionY: headPosition.1)
         default:
             print("default")
         }
@@ -68,15 +72,17 @@ class GameScene: SKScene {
         frameCount += 1
         
         if frameCount % 10 == 0 && gameStarted && !gameEnded {
-//            headPosition = updateSnakePosition(direction: snakeDirection)
             updateSnakePosition()
+            if headPosition == foodPosition {
+                eatFood()
+                spawnNewFood()
+            }
         }
         
         
     }
     
     func intializeBoard(size: Int) {
-        //board = Board(size: 15)
         
         for row in 0..<size {
             var squareRow: [Square] = []
@@ -121,6 +127,10 @@ class GameScene: SKScene {
             squares[headPosition.0][headPosition.1].color = NSColor.systemGreen
         }
         
+        /*
+         Loops through all indices of snakeArray except the first because we already updated
+         the headPosition in the above if statement. Updates the position of all the indices
+         */
         for index in (1..<snakeArray.count) {
             //get the current index's position
             let currentIndexPosition = snakeArray[index]
@@ -133,6 +143,42 @@ class GameScene: SKScene {
             //update the value of previousBodyPosition so it contains the old value of the current index
             previousBodyPosition = currentIndexPosition
         }
+    }
+    
+    func eatFood() {
+        //Temporarily giving the newSquarePosition the position of the last square in the snakeArray
+        var newSquarePosition = snakeArray[snakeArray.count - 1]
+        
+        if snakeDirection == "down" {
+            newSquarePosition = (newSquarePosition.0, newSquarePosition.1 - 1)
+        } else if snakeDirection == "right" {
+            newSquarePosition = (newSquarePosition.0 + 1, newSquarePosition.1)
+        } else if snakeDirection == "up" {
+            newSquarePosition = (newSquarePosition.0, newSquarePosition.1 + 1)
+        } else if snakeDirection == "left" {
+            newSquarePosition = (newSquarePosition.0 - 1, newSquarePosition.1)
+        }
+        snakeArray.append(newSquarePosition)
+        squares[newSquarePosition.0][newSquarePosition.1].isSnake = true
+        squares[newSquarePosition.0][newSquarePosition.1].color = NSColor.systemGreen
+    }
+    
+    func spawnNewFood() {
+    
+        var availableSquares: [(Int,Int)] = []
+        
+        for row in 0..<squares.count {
+            for col in 0..<squares[row].count {
+                if !squares[row][col].isSnake {
+                    availableSquares.append((row,col))
+                }
+            }
+        }
+        
+        let randomNumber = Int.random(in: 0..<availableSquares.count)
+        
+        foodPosition = availableSquares[randomNumber]
+        squares[foodPosition.0][foodPosition.1].color = NSColor.systemRed
     }
     
     func canMoveToNextSquare(direction: String) -> Bool {
@@ -175,5 +221,4 @@ class GameScene: SKScene {
     }
 }
 //TODO: Check if snake hits wall
-//TODO: Make snake multiple squares
 
