@@ -19,19 +19,24 @@ class GameScene: SKScene {
     
     // array of tuples where the first int is the row and the second is the column
     var snakeArray: [(Int, Int)] = []
-    var headPosition = (1,1)
+    var headPosition = (3,1)
     
     override func didMove(to view: SKView) {
-        
+        //Create a new grid of squares
         intializeBoard(size: 15)
+        
+        //Creating the starting position of the snake
+        squares[3][1].isSnake = true
+        squares[3][1].color = NSColor.systemGreen
+        squares[2][1].isSnake = true
+        squares[2][1].color = NSColor.systemGreen
         squares[1][1].isSnake = true
         squares[1][1].color = NSColor.systemGreen
-        squares[1][2].isSnake = true
-        squares[1][2].color = NSColor.systemGreen
+        
+        //Adding the initial coordinates of the snake to the array
         snakeArray.append(headPosition)
-        snakeArray.append((1,2))
-        //squares[1][3].isSnake = true
-//        headPosition = updateSnakePosition(direction: snakeDirection)
+        snakeArray.append((2,1))
+        snakeArray.append((1,1))
     }
     
     override func keyDown(with event: NSEvent) {
@@ -63,7 +68,8 @@ class GameScene: SKScene {
         frameCount += 1
         
         if frameCount % 10 == 0 && gameStarted && !gameEnded {
-            headPosition = updateSnakePosition(direction: snakeDirection)
+//            headPosition = updateSnakePosition(direction: snakeDirection)
+            updateSnakePosition()
         }
         
         
@@ -91,51 +97,42 @@ class GameScene: SKScene {
         return square
     }
     
-    func updateSnakePosition(direction: String) -> (Int, Int) {
-        
-        var posX = headPosition.0
-        var posY = headPosition.1
-        var newHeadPosition = (headPosition.0, headPosition.1)
-        var oldHeadPosition = headPosition
-        
+    func updateSnakePosition() {
+        /*
+         We need to preserve the head position before we change it in the if statement so
+         we can use it to update the rest of the snakes body
+         */
+        var previousBodyPosition = headPosition
         if snakeDirection == "down" && canMoveToNextSquare(direction: "down") {
-            squares[posX][posY].isSnake = false
-            squares[posX][posY].color = NSColor.white
-            squares[posX][posY - 1].isSnake = true
-            squares[posX][posY - 1].color = NSColor.systemGreen
-            newHeadPosition = (posX, posY - 1)
+            
+            headPosition = (headPosition.0, headPosition.1 - 1)
+            squares[headPosition.0][headPosition.1].color = NSColor.systemGreen
         } else if snakeDirection == "right" && canMoveToNextSquare(direction: "right") {
-            squares[posX][posY].isSnake = false
-            squares[posX][posY].color = NSColor.white
-            squares[posX + 1][posY].isSnake = true
-            squares[posX + 1][posY].color = NSColor.systemGreen
-            newHeadPosition = (posX + 1, posY)
+            
+            headPosition = (headPosition.0 + 1, headPosition.1)
+            squares[headPosition.0][headPosition.1].color = NSColor.systemGreen
         } else if snakeDirection == "up" && canMoveToNextSquare(direction: "up") {
-            squares[posX][posY].isSnake = false
-            squares[posX][posY].color = NSColor.white
-            squares[posX][posY + 1].isSnake = true
-            squares[posX][posY + 1].color = NSColor.systemGreen
-            newHeadPosition = (posX, posY + 1)
+            
+            headPosition = (headPosition.0, headPosition.1 + 1)
+            squares[headPosition.0][headPosition.1].color = NSColor.systemGreen
         } else if snakeDirection == "left" && canMoveToNextSquare(direction: "left") {
-            squares[posX][posY].isSnake = false
-            squares[posX][posY].color = NSColor.white
-            squares[posX - 1][posY].isSnake = true
-            squares[posX - 1][posY].color = NSColor.systemGreen
-            newHeadPosition = (posX - 1, posY)
+            
+            headPosition = (headPosition.0 - 1, headPosition.1)
+            squares[headPosition.0][headPosition.1].color = NSColor.systemGreen
         }
         
-        let count = 1..<snakeArray.count
-        for i in count {
-            let previousPos = snakeArray[i]
-            snakeArray[i] = oldHeadPosition
-            oldHeadPosition = previousPos
+        for index in (1..<snakeArray.count) {
+            //get the current index's position
+            let currentIndexPosition = snakeArray[index]
+            squares[currentIndexPosition.0][currentIndexPosition.1].color = NSColor.white
             
-            if (i + 1) == snakeArray.count {
-                squares[oldHeadPosition.0][oldHeadPosition.1].isSnake = false
-                squares[oldHeadPosition.0][oldHeadPosition.1].color = NSColor.white
-            }
+            //update the current index's position to the position of the previous index
+            snakeArray[index] = previousBodyPosition
+            squares[previousBodyPosition.0][previousBodyPosition.1].color = NSColor.systemGreen
+            
+            //update the value of previousBodyPosition so it contains the old value of the current index
+            previousBodyPosition = currentIndexPosition
         }
-        return newHeadPosition
     }
     
     func canMoveToNextSquare(direction: String) -> Bool {
@@ -159,7 +156,8 @@ class GameScene: SKScene {
                 gameEnded = true
             }
         }
-        return gameEnded
+        //return gameEnded
+        return true
     }
     
     func getNeighboringSquares(square: Square) -> [Square] {
